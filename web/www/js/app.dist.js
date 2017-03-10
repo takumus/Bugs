@@ -153,8 +153,8 @@
 	        });
 	        var span = 40;
 	        var n = Math.floor((this.route.length - this.bone.length) * this.step);
-	        var n1 = n % (span / 2);
-	        var n2 = n % span;
+	        var n1 = n % (span / 4);
+	        var n2 = n % (span / 2);
 	        var id = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
 	        var id2 = id + 1;
 	        var p1 = this.route[id];
@@ -167,19 +167,13 @@
 	        g.drawCircle(x, y, 2);
 	        var lp = this.route[Math.floor(n + this.bone.length / 2)];
 	        if (n1 < n2) {
-	            var id_1 = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2) - span / 2;
-	            var id2_1 = id_1 + 1;
-	            var p1_1 = this.route[id_1];
-	            var p2_1 = this.route[id2_1];
-	            var tx_1 = p2_1.x - p1_1.x;
-	            var ty_1 = p2_1.y - p1_1.y;
-	            var r_1 = Math.atan2(ty_1, tx_1) + Math.PI / 2;
-	            var x2 = Math.cos(r_1) * 40 + p1_1.x;
-	            var y2 = Math.sin(r_1) * 40 + p2_1.y;
-	            var dx = (x - x2) * (n1 / (span / 2));
-	            var dy = (y - y2) * (n1 / (span / 2));
-	            g.moveTo(x2, y2);
-	            g.lineTo(x2 + dx, y2 + dy);
+	            var id_1 = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
+	            var p = this.getPos(id_1);
+	            var p2_1 = this.getPos(id_1 + span / 2);
+	            var dx = (p2_1.x - p.x) * (n1 / (span / 4));
+	            var dy = (p2_1.y - p.y) * (n1 / (span / 4));
+	            g.moveTo(lp.x, lp.y);
+	            g.lineTo(p.x + dx, p.y + dy);
 	            console.log('b : ' + n1);
 	        }
 	        else {
@@ -187,6 +181,18 @@
 	            g.moveTo(lp.x, lp.y);
 	            g.lineTo(x, y);
 	        }
+	        // g.moveTo(lp.x, lp.y);
+	        // g.lineTo(x, y);
+	    };
+	    Bug.prototype.getPos = function (id) {
+	        var id2 = id + 1;
+	        console.log(id2);
+	        var p1 = this.route[id];
+	        var p2 = this.route[id2];
+	        var tx = p2.x - p1.x;
+	        var ty = p2.y - p1.y;
+	        var r = Math.atan2(ty, tx) + Math.PI / 2;
+	        return new UTILS.Pos(Math.cos(r) * 40 + p1.x, Math.sin(r) * 40 + p2.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));

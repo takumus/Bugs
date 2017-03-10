@@ -151,8 +151,20 @@
 	                g.lineTo(pos.x, pos.y);
 	            }
 	        });
-	        var n1 = Math.floor((this.route.length - this.bone.length) * this.step) % 20;
-	        var n2 = Math.floor((this.route.length - this.bone.length) * this.step) % 40;
+	        var span = 20;
+	        var n = Math.floor((this.route.length - this.bone.length) * this.step);
+	        var n1 = n % (span / 2);
+	        var n2 = n % span;
+	        var id = Math.floor(n / span) * span + Math.floor(this.bone.length / 2);
+	        var id2 = id + 1;
+	        var p1 = this.route[id];
+	        var p2 = this.route[id2];
+	        var tx = p2.x - p1.x;
+	        var ty = p2.y - p1.y;
+	        var r = Math.atan2(ty, tx) + Math.PI / 2;
+	        var x = Math.cos(r) * 20 + p1.x;
+	        var y = Math.sin(r) * 20 + p2.y;
+	        g.drawCircle(x, y, 2);
 	        if (n1 < n2) {
 	            console.log('b : ' + n1);
 	        }

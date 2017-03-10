@@ -68,6 +68,11 @@
 	    bug.render();
 	    stage.addChild(bug.graphics);
 	    guide.render(route);
+	    window.addEventListener('mousemove', function (e) {
+	        var p = (e.clientX - 200) / (stageWidth - 400);
+	        bug.setStep(p);
+	        bug.render();
+	    });
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();

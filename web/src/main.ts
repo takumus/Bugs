@@ -26,6 +26,12 @@ function initBugs(): void {
     bug.render();
     stage.addChild(bug.graphics);
     guide.render(route);
+
+    window.addEventListener('mousemove', (e) => {
+        const p = (e.clientX - 200) / (stageWidth - 400);
+        bug.setStep(p);
+        bug.render();
+    })
 }
 function initGUI(): void {
     const gui = new dat.GUI();

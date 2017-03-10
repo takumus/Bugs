@@ -42,8 +42,11 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var bugs_1 = __webpack_require__(1);
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
@@ -55,7 +58,17 @@
 	    S: 0.27,
 	    V: 0.80
 	};
-	var guide = new ROUTES.Debugger();
+	function initBugs() {
+	    var guide = new ROUTES.Debugger();
+	    guide.setOption(0xCCCCCC, 1, false, false);
+	    stage.addChild(guide);
+	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, Math.PI), new UTILS.VecPos(600, 600, -Math.PI), 100, 100, 5).wave(10, 0.1);
+	    var bug = new bugs_1.Bug(30);
+	    bug.setRoute(route);
+	    bug.render();
+	    stage.addChild(bug.graphics);
+	    guide.render(route);
+	}
 	function initGUI() {
 	    var gui = new dat.GUI();
 	    gui.add(props, 'S', 0, 1);
@@ -74,9 +87,9 @@
 	    var color = new UTILS.Color(0xffffff);
 	    initGUI();
 	    initPIXI();
-	    guide.setOption(0xCCCCCC, 1, false, false);
 	    draw();
 	    resize();
+	    initBugs();
 	}
 	function draw() {
 	    requestAnimationFrame(draw);
@@ -89,6 +102,54 @@
 	    renderer.resize(stageWidth, stageHeight);
 	}
 	window.onload = init;
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Bug = (function (_super) {
+	    __extends(Bug, _super);
+	    function Bug(length) {
+	        var _this = _super.call(this, length) || this;
+	        _this._graphics = new PIXI.Graphics();
+	        return _this;
+	    }
+	    Object.defineProperty(Bug.prototype, "graphics", {
+	        get: function () {
+	            return this._graphics;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Bug.prototype.render = function () {
+	        var g = this._graphics;
+	        g.clear();
+	        g.lineStyle(2, 0xff0000);
+	        this.bone.forEach(function (pos, id) {
+	            if (id == 0) {
+	                g.moveTo(pos.x, pos.y);
+	            }
+	            else {
+	                g.lineTo(pos.x, pos.y);
+	            }
+	        });
+	    };
+	    return Bug;
+	}(WORMS.Base));
+	exports.Bug = Bug;
 
 
 /***/ }

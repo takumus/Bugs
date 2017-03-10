@@ -1,3 +1,4 @@
+import {Bug} from './bugs';
 let renderer: PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage: PIXI.Container = new PIXI.Container();
 let canvas: HTMLCanvasElement;
@@ -9,8 +10,23 @@ const props = {
     S: 0.27,
     V: 0.80
 }
-const guide = new ROUTES.Debugger();
-
+function initBugs(): void {
+    const guide = new ROUTES.Debugger();
+    guide.setOption(0xCCCCCC, 1, false, false);
+    stage.addChild(guide);
+    const route = ROUTES.RouteGenerator.getMinimumRoute(
+        new UTILS.VecPos(200, 200, Math.PI),
+        new UTILS.VecPos(600, 600, -Math.PI),
+        100,
+        100,
+        5
+    ).wave(10, 0.1);
+    const bug = new Bug(30);
+    bug.setRoute(route);
+    bug.render();
+    stage.addChild(bug.graphics);
+    guide.render(route);
+}
 function initGUI(): void {
     const gui = new dat.GUI();
     gui.add(props, 'S', 0, 1);
@@ -29,10 +45,9 @@ function init(): void {
     const color = new UTILS.Color(0xffffff);
     initGUI();
     initPIXI();
-    guide.setOption(0xCCCCCC, 1, false, false);
-
     draw();
     resize();
+    initBugs();
 }
 function draw(): void {
     requestAnimationFrame(draw);

@@ -10,7 +10,6 @@
     "./pixi-filters.d.ts",
     "../utils/dist/index.d.ts",
     "../routes/dist/index.d.ts",
-    "../worms/dist/index.d.ts",
-    "../figures/dist/index.d.ts"
+    "../worms/dist/index.d.ts"
   ]
 }

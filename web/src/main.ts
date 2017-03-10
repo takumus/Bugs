@@ -29,8 +29,6 @@ function init(): void {
     const color = new UTILS.Color(0xffffff);
     initGUI();
     initPIXI();
-    WF.FigureWorm.graphics = new PIXI.Graphics();
-    stage.addChild(WF.FigureWorm.graphics);
     guide.setOption(0xCCCCCC, 1, false, false);
 
     draw();
@@ -39,7 +37,6 @@ function init(): void {
 function draw(): void {
     requestAnimationFrame(draw);
     TWEEN.update();
-    WF.FigureWorm.render();
     renderer.render(stage);
 }
 function resize(): void {

@@ -62,8 +62,8 @@
 	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, Math.PI), new UTILS.VecPos(600, 600, -Math.PI), 100, 100, 5).wave(10, 0.1);
-	    var bug = new bugs_1.Bug(30);
+	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 200, 200, 5).wave(10, 0.1);
+	    var bug = new bugs_1.Bug(80);
 	    bug.setRoute(route);
 	    bug.render();
 	    stage.addChild(bug.graphics);
@@ -154,32 +154,26 @@
 	        var span = 40;
 	        var n = Math.floor((this.route.length - this.bone.length) * this.step);
 	        var n1 = n % (span / 4);
+	        var n12 = (this.route.length - this.bone.length) * this.step % (span / 4);
 	        var n2 = n % (span / 2);
 	        var id = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
-	        var id2 = id + 1;
-	        var p1 = this.route[id];
-	        var p2 = this.route[id2];
-	        var tx = p2.x - p1.x;
-	        var ty = p2.y - p1.y;
-	        var r = Math.atan2(ty, tx) + Math.PI / 2;
-	        var x = Math.cos(r) * 40 + p1.x;
-	        var y = Math.sin(r) * 40 + p2.y;
-	        g.drawCircle(x, y, 2);
-	        var lp = this.route[Math.floor(n + this.bone.length / 2)];
+	        var p = this.getPos(id);
+	        //g.drawCircle(p.x, p.y, 2);
+	        var lp = this.bone[this.bone.length / 2]; // this.route[Math.floor(n + this.bone.length / 2)];
 	        if (n1 < n2) {
 	            var id_1 = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
-	            var p = this.getPos(id_1);
-	            var p2_1 = this.getPos(id_1 + span / 2);
-	            var dx = (p2_1.x - p.x) * (n1 / (span / 4));
-	            var dy = (p2_1.y - p.y) * (n1 / (span / 4));
+	            var p_1 = this.getPos(id_1);
+	            var p2 = this.getPos(id_1 + span / 2);
+	            var dx = (p2.x - p_1.x) * (n12 / (span / 4));
+	            var dy = (p2.y - p_1.y) * (n12 / (span / 4));
 	            g.moveTo(lp.x, lp.y);
-	            g.lineTo(p.x + dx, p.y + dy);
+	            g.lineTo(p_1.x + dx, p_1.y + dy);
 	            console.log('b : ' + n1);
 	        }
 	        else {
 	            console.log('a : ' + n1);
 	            g.moveTo(lp.x, lp.y);
-	            g.lineTo(x, y);
+	            g.lineTo(p.x, p.y);
 	        }
 	        // g.moveTo(lp.x, lp.y);
 	        // g.lineTo(x, y);
@@ -192,7 +186,7 @@
 	        var tx = p2.x - p1.x;
 	        var ty = p2.y - p1.y;
 	        var r = Math.atan2(ty, tx) + Math.PI / 2;
-	        return new UTILS.Pos(Math.cos(r) * 40 + p1.x, Math.sin(r) * 40 + p2.y);
+	        return new UTILS.Pos(Math.cos(r) * 80 + p1.x, Math.sin(r) * 80 + p2.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));

@@ -10,7 +10,7 @@ export class Bug extends WORMS.Base {
     public render() {
         const g = this._graphics;
         g.clear();
-        g.lineStyle(2, 0xff0000);
+        g.lineStyle(6, 0xff0000);
         this.bone.forEach((pos, id) => {
             if (id == 0) {
                 g.moveTo(pos.x, pos.y);
@@ -18,5 +18,12 @@ export class Bug extends WORMS.Base {
                 g.lineTo(pos.x, pos.y);
             }
         });
+        const n1 = Math.floor((this.route.length - this.bone.length) * this.step) % 20;
+        const n2 = Math.floor((this.route.length - this.bone.length) * this.step) % 40;
+        if (n1 < n2) {
+            console.log('b : ' + n1);
+        }else {
+            console.log('a : ' + n1);
+        }
     }
 }

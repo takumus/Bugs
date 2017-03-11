@@ -63,7 +63,7 @@
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
 	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 200, 200, 5).wave(10, 0.1);
-	    var bug = new bugs_1.Bug(80);
+	    var bug = new bugs_1.Bug(44);
 	    bug.setRoute(route);
 	    bug.render();
 	    stage.addChild(bug.graphics);
@@ -131,7 +131,8 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        _this.lp = new legPos_1.LegPos(_this, 40, 80);
+	        _this.lp = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 0);
+	        _this.lp2 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 20);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -156,6 +157,9 @@
 	        var p = this.lp.getPos();
 	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
 	        g.lineTo(p.x, p.y);
+	        var p2 = this.lp2.getPos();
+	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+	        g.lineTo(p2.x, p2.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -169,24 +173,27 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var LegPos = (function () {
-	    function LegPos(bug, span, radian) {
+	    function LegPos(bug, span, radius, radianOffset, spanOffset) {
 	        this.bug = bug;
 	        this.span = span;
-	        this.radian = radian;
+	        this.radius = radius;
+	        this.radianOffset = radianOffset;
+	        this.spanOffset = spanOffset;
 	    }
 	    LegPos.prototype.getPos = function () {
-	        var fid = (this.bug.route.length - this.bug.bone.length) * this.bug.step;
+	        var fid = (this.bug.route.length - this.bug.bone.length) * this.bug.step + this.spanOffset;
 	        var iid = Math.floor(fid);
 	        var n1 = iid % (this.span / 2);
-	        var n12 = fid % (this.span / 2);
+	        var n1f = fid % (this.span / 2);
 	        var n2 = iid % this.span;
-	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2);
+	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2) - this.spanOffset;
+	        console.log(pid);
 	        var p = this._getPos(pid);
 	        if (n1 < n2) {
 	            var p_1 = this._getPos(pid);
 	            var p2 = this._getPos(pid + this.span);
-	            var dx = (p2.x - p_1.x) * (n12 / (this.span / 2));
-	            var dy = (p2.y - p_1.y) * (n12 / (this.span / 2));
+	            var dx = (p2.x - p_1.x) * (n1f / (this.span / 2));
+	            var dy = (p2.y - p_1.y) * (n1f / (this.span / 2));
 	            // console.log('b : ' + n1);
 	            p_1.x += dx;
 	            p_1.y += dy;
@@ -204,8 +211,8 @@
 	            p2 = this.bug.route[id - 1];
 	        var tx = p2.x - p1.x;
 	        var ty = p2.y - p1.y;
-	        var r = Math.atan2(ty, tx) + Math.PI / 2;
-	        return new UTILS.Pos(Math.cos(r) * this.radian + p1.x, Math.sin(r) * this.radian + p1.y);
+	        var r = Math.atan2(ty, tx) + this.radianOffset;
+	        return new UTILS.Pos(Math.cos(r) * this.radius + p1.x, Math.sin(r) * this.radius + p1.y);
 	    };
 	    return LegPos;
 	}());

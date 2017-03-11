@@ -1,3 +1,4 @@
+import {LegPos} from './legPos';
 export class Bug extends WORMS.Base {
     private _graphics: PIXI.Graphics;
     constructor(length: number) {

@@ -32,7 +32,7 @@ function initBugs(): void {
         guide.render(route);
         bug.setRoute(bug.getCurrentLine().pushLine(route));
         new TWEEN.Tween({s: 0})
-        .to({s: 1}, 4000)
+        .to({s: 1}, 3000)
         .onUpdate(function(): void {
             bug.setStep(this.s);
             bug.render();

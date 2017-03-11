@@ -73,7 +73,7 @@
 	        guide.render(route);
 	        bug.setRoute(bug.getCurrentLine().pushLine(route));
 	        new TWEEN.Tween({ s: 0 })
-	            .to({ s: 1 }, 4000)
+	            .to({ s: 1 }, 3000)
 	            .onUpdate(function () {
 	            bug.setStep(this.s);
 	            bug.render();
@@ -142,7 +142,7 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 0.4;
+	        var scale = 1;
 	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
 	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
 	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
@@ -176,6 +176,9 @@
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
 	        this.renderP(this.lp4.getPos());
+	    };
+	    Bug.prototype.setRoute = function (route, nextLength) {
+	        _super.prototype.setRoute.call(this, route, nextLength);
 	    };
 	    Bug.prototype.renderP = function (p) {
 	        var g = this._graphics;
@@ -256,23 +259,25 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var LegPos = (function () {
-	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset) {
+	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset, baseId) {
+	        if (baseId === void 0) { baseId = 0; }
 	        this.bug = bug;
 	        this.span = span;
 	        this.radius = radius;
 	        this.radianOffset = radianOffset;
 	        this.spanOffset = spanOffset % span;
-	        this.beginOffset = beginOffset + 2000;
+	        this.beginOffset = beginOffset;
 	        this._baseId = 0;
 	    }
 	    LegPos.prototype.getPos = function () {
 	        this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
 	        var fid = this._baseId + this.spanOffset;
-	        var nf = fid % (this.span / 2);
+	        var nf = (fid) % (this.span / 2);
+	        var nf2 = (fid) % this.span;
 	        var pid = Math.floor(Math.floor(fid / this.span) * this.span - this.spanOffset + (this.bug.currentLength - this.beginOffset));
 	        var pos = this._getPos(pid);
 	        this._id = pid;
-	        if (nf < fid % this.span) {
+	        if (nf < nf2) {
 	            var ppos = this._getPos(pid + this.span);
 	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
 	            // p = nf / (this.span / 2);

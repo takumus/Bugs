@@ -125,16 +125,14 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var legPos_1 = __webpack_require__(2);
+	var leg_1 = __webpack_require__(2);
 	var Bug = (function (_super) {
 	    __extends(Bug, _super);
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        _this.lp = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 0, 0);
-	        _this.lp2 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 20, 0);
-	        _this.lp3 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 0, 0);
-	        _this.lp4 = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 20, 0);
+	        _this.lp = new leg_1.Leg(_this, true, 120, 120, 80, 40, 100, -Math.PI / 2, 0);
+	        _this.lp2 = new leg_1.Leg(_this, false, 120, 120, 80, 0, 100, Math.PI / 2, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -160,28 +158,17 @@
 	        ;
 	        var id1 = Math.floor(this.currentLength * 0.1);
 	        var id2 = Math.floor(this.currentLength * 0.9);
-	        this.lp.beginOffset = this.lp2.beginOffset = id1;
-	        this.lp3.beginOffset = this.lp4.beginOffset = id2;
+	        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = id1;
 	        var bp1 = this.bone[id1];
 	        var bp2 = this.bone[id2];
 	        var p = this.lp.getPos();
-	        g.moveTo(bp1.x, bp1.y);
-	        g.lineTo(p.x, p.y);
-	        g.drawCircle(p.x, p.y, 5);
+	        g.moveTo(p.begin.x, p.begin.y);
+	        g.lineTo(p.middle.x, p.middle.y);
+	        g.lineTo(p.end.x, p.end.y);
 	        var p2 = this.lp2.getPos();
-	        g.moveTo(bp1.x, bp1.y);
-	        g.lineTo(p2.x, p2.y);
-	        g.drawCircle(p2.x, p2.y, 5);
-	        if (this.lp3) {
-	            var p3 = this.lp3.getPos();
-	            g.moveTo(bp2.x, bp2.y);
-	            g.lineTo(p3.x, p3.y);
-	            g.drawCircle(p3.x, p3.y, 5);
-	            var p4 = this.lp4.getPos();
-	            g.moveTo(bp2.x, bp2.y);
-	            g.lineTo(p4.x, p4.y);
-	            g.drawCircle(p4.x, p4.y, 5);
-	        }
+	        g.moveTo(p2.begin.x, p2.begin.y);
+	        g.lineTo(p2.middle.x, p2.middle.y);
+	        g.lineTo(p2.end.x, p2.end.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -190,6 +177,54 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var legPos_1 = __webpack_require__(3);
+	var Leg = (function () {
+	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, index) {
+	        this._bug = bug;
+	        this._flip = flip;
+	        this._index = index;
+	        this._length1 = length1;
+	        this._length2 = length2;
+	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, index);
+	    }
+	    Leg.prototype.getPos = function () {
+	        var fromPos = this._bug.bone[this._index];
+	        var toPos = this._legPos.getPos();
+	        var r = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
+	        var a = fromPos.distance(toPos);
+	        var b = this._length1;
+	        var c = this._length2;
+	        var ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
+	        var rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
+	        var rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
+	        var rr = r + (this._flip ? rc : -rc);
+	        console.log(rc);
+	        var x = Math.cos(rr) * this._length1 + fromPos.x;
+	        var y = Math.sin(rr) * this._length1 + fromPos.y;
+	        return {
+	            begin: fromPos,
+	            middle: new UTILS.Pos(x, y),
+	            end: toPos
+	        };
+	    };
+	    Object.defineProperty(Leg.prototype, "legPos", {
+	        get: function () {
+	            return this._legPos;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return Leg;
+	}());
+	exports.Leg = Leg;
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	"use strict";

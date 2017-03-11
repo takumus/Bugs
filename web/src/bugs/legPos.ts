@@ -14,12 +14,12 @@ export class LegPos {
         this.spanOffset = spanOffset;
     }
     public getPos() {
-        const fid = (this.bug.route.length - this.bug.bone.length) * this.bug.step + this.spanOffset;
+        const fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
         const iid = Math.floor(fid);
         const n1 = iid % (this.span / 2);
         const n1f = fid % (this.span / 2);
         const n2 = iid % this.span;
-        const pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2) - this.spanOffset;
+        const pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.currentLength / 2) - this.spanOffset;
         console.log(pid);
         const p = this._getPos(pid);
         this._id = pid;

@@ -16,27 +16,33 @@ export class Bug extends WORMS.Base {
         const g = this._graphics;
         g.clear();
         g.lineStyle(6, 0xff0000);
-        this.bone.forEach((pos, id) => {
-            if (id == 0) {
+        for (let i = 0; i < this.currentLength; i ++) {
+            const pos = this.bone[i];
+            if (i == 0) {
                 g.moveTo(pos.x, pos.y);
             }else {
                 g.lineTo(pos.x, pos.y);
             }
-        });
+        };
         const p = this.lp.getPos();
-        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+        const bp = this.bone[Math.floor(this.currentLength / 2)];
+        g.moveTo(bp.x, bp.y);
         g.lineTo(p.x, p.y);
         g.drawCircle(p.x, p.y, 5);
 
         const p2 = this.lp2.getPos();
-        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+        g.moveTo(bp.x, bp.y);
         g.lineTo(p2.x, p2.y);
         g.drawCircle(p2.x, p2.y, 5);
 
         const pp = this.route[this.lp.id];
         g.drawCircle(pp.x, pp.y, 10);
+        g.moveTo(pp.x, pp.y);
+        g.lineTo(p.x, p.y);
 
         const pp2 = this.route[this.lp2.id];
         g.drawCircle(pp2.x, pp2.y, 10);
+        g.moveTo(pp2.x, pp2.y);
+        g.lineTo(p2.x, p2.y);
     }
 }

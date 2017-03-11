@@ -146,26 +146,33 @@
 	        var g = this._graphics;
 	        g.clear();
 	        g.lineStyle(6, 0xff0000);
-	        this.bone.forEach(function (pos, id) {
-	            if (id == 0) {
+	        for (var i = 0; i < this.currentLength; i++) {
+	            var pos = this.bone[i];
+	            if (i == 0) {
 	                g.moveTo(pos.x, pos.y);
 	            }
 	            else {
 	                g.lineTo(pos.x, pos.y);
 	            }
-	        });
+	        }
+	        ;
 	        var p = this.lp.getPos();
-	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+	        var bp = this.bone[Math.floor(this.currentLength / 2)];
+	        g.moveTo(bp.x, bp.y);
 	        g.lineTo(p.x, p.y);
 	        g.drawCircle(p.x, p.y, 5);
 	        var p2 = this.lp2.getPos();
-	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+	        g.moveTo(bp.x, bp.y);
 	        g.lineTo(p2.x, p2.y);
 	        g.drawCircle(p2.x, p2.y, 5);
 	        var pp = this.route[this.lp.id];
 	        g.drawCircle(pp.x, pp.y, 10);
+	        g.moveTo(pp.x, pp.y);
+	        g.lineTo(p.x, p.y);
 	        var pp2 = this.route[this.lp2.id];
 	        g.drawCircle(pp2.x, pp2.y, 10);
+	        g.moveTo(pp2.x, pp2.y);
+	        g.lineTo(p2.x, p2.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -187,12 +194,12 @@
 	        this.spanOffset = spanOffset;
 	    }
 	    LegPos.prototype.getPos = function () {
-	        var fid = (this.bug.route.length - this.bug.bone.length) * this.bug.step + this.spanOffset;
+	        var fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
 	        var iid = Math.floor(fid);
 	        var n1 = iid % (this.span / 2);
 	        var n1f = fid % (this.span / 2);
 	        var n2 = iid % this.span;
-	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2) - this.spanOffset;
+	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.currentLength / 2) - this.spanOffset;
 	        console.log(pid);
 	        var p = this._getPos(pid);
 	        this._id = pid;

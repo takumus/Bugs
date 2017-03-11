@@ -69,7 +69,7 @@
 	    stage.addChild(bug.graphics);
 	    guide.render(route);
 	    window.addEventListener('mousemove', function (e) {
-	        var p = (e.clientX - 200) / (stageWidth - 400);
+	        var p = (e.clientY - 200) / (stageHeight - 400);
 	        bug.setStep(p);
 	        bug.render();
 	    });
@@ -131,8 +131,10 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        _this.lp = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 0);
-	        _this.lp2 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 20);
+	        _this.lp = new legPos_1.LegPos(_this, 40, 120, -Math.PI / 2, 0, 10);
+	        _this.lp2 = new legPos_1.LegPos(_this, 40, 120, Math.PI / 2, 20, 10);
+	        _this.lp3 = new legPos_1.LegPos(_this, 40, 120, Math.PI / 2, 0, 40);
+	        _this.lp4 = new legPos_1.LegPos(_this, 40, 120, -Math.PI / 2, 20, 40);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -156,23 +158,26 @@
 	            }
 	        }
 	        ;
+	        var bp1 = this.bone[Math.floor(this.currentLength * 0.7)];
+	        var bp2 = this.bone[Math.floor(this.currentLength * 0.3)];
 	        var p = this.lp.getPos();
-	        var bp = this.bone[Math.floor(this.currentLength / 2)];
-	        g.moveTo(bp.x, bp.y);
+	        g.moveTo(bp1.x, bp1.y);
 	        g.lineTo(p.x, p.y);
 	        g.drawCircle(p.x, p.y, 5);
 	        var p2 = this.lp2.getPos();
-	        g.moveTo(bp.x, bp.y);
+	        g.moveTo(bp1.x, bp1.y);
 	        g.lineTo(p2.x, p2.y);
 	        g.drawCircle(p2.x, p2.y, 5);
-	        var pp = this.route[this.lp.id];
-	        g.drawCircle(pp.x, pp.y, 10);
-	        g.moveTo(pp.x, pp.y);
-	        g.lineTo(p.x, p.y);
-	        var pp2 = this.route[this.lp2.id];
-	        g.drawCircle(pp2.x, pp2.y, 10);
-	        g.moveTo(pp2.x, pp2.y);
-	        g.lineTo(p2.x, p2.y);
+	        if (this.lp3) {
+	            var p3 = this.lp3.getPos();
+	            g.moveTo(bp2.x, bp2.y);
+	            g.lineTo(p3.x, p3.y);
+	            g.drawCircle(p3.x, p3.y, 5);
+	            var p4 = this.lp4.getPos();
+	            g.moveTo(bp2.x, bp2.y);
+	            g.lineTo(p4.x, p4.y);
+	            g.drawCircle(p4.x, p4.y, 5);
+	        }
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -186,12 +191,13 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var LegPos = (function () {
-	    function LegPos(bug, span, radius, radianOffset, spanOffset) {
+	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset) {
 	        this.bug = bug;
 	        this.span = span;
 	        this.radius = radius;
 	        this.radianOffset = radianOffset;
 	        this.spanOffset = spanOffset;
+	        this.beginOffset = beginOffset;
 	    }
 	    LegPos.prototype.getPos = function () {
 	        var fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
@@ -199,7 +205,7 @@
 	        var n1 = iid % (this.span / 2);
 	        var n1f = fid % (this.span / 2);
 	        var n2 = iid % this.span;
-	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.currentLength / 2) - this.spanOffset;
+	        var pid = Math.floor(Math.floor(iid / this.span) * this.span) - this.spanOffset + this.beginOffset;
 	        console.log(pid);
 	        var p = this._getPos(pid);
 	        this._id = pid;
@@ -219,6 +225,8 @@
 	        return p;
 	    };
 	    LegPos.prototype._getPos = function (id) {
+	        if (id < 0)
+	            id = 0;
 	        var p1 = this.bug.route[id];
 	        var p2 = this.bug.route[id + 1];
 	        if (!p2)

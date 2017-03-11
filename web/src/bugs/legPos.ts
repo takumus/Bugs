@@ -5,13 +5,15 @@ export class LegPos {
     private radius: number;
     private radianOffset: number;
     private spanOffset: number;
+    private beginOffset: number;
     private _id: number;
-    constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number) {
+    constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number, beginOffset: number) {
         this.bug = bug;
         this.span = span;
         this.radius = radius;
         this.radianOffset = radianOffset;
         this.spanOffset = spanOffset;
+        this.beginOffset = beginOffset;
     }
     public getPos() {
         const fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
@@ -19,7 +21,7 @@ export class LegPos {
         const n1 = iid % (this.span / 2);
         const n1f = fid % (this.span / 2);
         const n2 = iid % this.span;
-        const pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.currentLength / 2) - this.spanOffset;
+        const pid = Math.floor(Math.floor(iid / this.span) * this.span) - this.spanOffset + this.beginOffset;
         console.log(pid);
         const p = this._getPos(pid);
         this._id = pid;
@@ -38,6 +40,7 @@ export class LegPos {
         return p;
     }
     public _getPos(id: number): UTILS.Pos {
+        if(id < 0) id = 0;
         const p1 = this.bug.route[id];
         let p2 = this.bug.route[id + 1];
         if (!p2) p2 = this.bug.route[id - 1];

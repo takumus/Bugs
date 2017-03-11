@@ -28,7 +28,7 @@ function initBugs(): void {
     guide.render(route);
 
     window.addEventListener('mousemove', (e) => {
-        const p = (e.clientX - 200) / (stageWidth - 400);
+        const p = (e.clientY - 200) / (stageHeight - 400);
         bug.setStep(p);
         bug.render();
     })

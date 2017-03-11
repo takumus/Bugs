@@ -196,41 +196,33 @@
 	        this.span = span;
 	        this.radius = radius;
 	        this.radianOffset = radianOffset;
-	        this.spanOffset = spanOffset;
+	        this.spanOffset = spanOffset % span;
 	        this.beginOffset = beginOffset;
 	    }
 	    LegPos.prototype.getPos = function () {
 	        var fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
-	        var iid = Math.floor(fid);
-	        var n1 = iid % (this.span / 2);
-	        var n1f = fid % (this.span / 2);
-	        var n2 = iid % this.span;
-	        var pid = Math.floor(Math.floor(iid / this.span) * this.span) - this.spanOffset + this.beginOffset;
-	        console.log(pid);
-	        var p = this._getPos(pid);
+	        var id = Math.floor(fid);
+	        var nf = fid % (this.span / 2);
+	        var pid = Math.floor(Math.floor(id / this.span) * this.span - this.spanOffset + this.beginOffset);
+	        var pos = this._getPos(pid);
 	        this._id = pid;
-	        if (n1 < n2) {
-	            var p_1 = this._getPos(pid);
-	            var p2 = this._getPos(pid + this.span);
-	            var dx = (p2.x - p_1.x) * (n1f / (this.span / 2));
-	            var dy = (p2.y - p_1.y) * (n1f / (this.span / 2));
-	            // console.log('b : ' + n1);
-	            p_1.x += dx;
-	            p_1.y += dy;
-	            return p_1;
+	        if (nf < id % this.span) {
+	            var ppos = this._getPos(pid + this.span);
+	            var p = nf / (this.span / 2);
+	            pos.x += (ppos.x - pos.x) * p;
+	            pos.y += (ppos.y - pos.y) * p;
+	            return pos;
 	        }
-	        else {
-	            // console.log('a : ' + n1);
-	        }
-	        return p;
+	        return pos;
 	    };
 	    LegPos.prototype._getPos = function (id) {
+	        id = Math.floor(id);
 	        if (id < 0)
 	            id = 0;
+	        if (id >= this.bug.route.length - 1)
+	            id = this.bug.route.length - 2;
 	        var p1 = this.bug.route[id];
 	        var p2 = this.bug.route[id + 1];
-	        if (!p2)
-	            p2 = this.bug.route[id - 1];
 	        var tx = p2.x - p1.x;
 	        var ty = p2.y - p1.y;
 	        var r = Math.atan2(ty, tx) + this.radianOffset;

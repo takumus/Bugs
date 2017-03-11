@@ -111,7 +111,7 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var __extends = (this && this.__extends) || (function () {
@@ -125,11 +125,13 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
+	var legPos_1 = __webpack_require__(2);
 	var Bug = (function (_super) {
 	    __extends(Bug, _super);
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
+	        _this.lp = new legPos_1.LegPos(_this, 40, 80);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -151,10 +153,63 @@
 	                g.lineTo(pos.x, pos.y);
 	            }
 	        });
+	        var p = this.lp.getPos();
+	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
+	        g.lineTo(p.x, p.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));
 	exports.Bug = Bug;
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var LegPos = (function () {
+	    function LegPos(bug, span, radian) {
+	        this.bug = bug;
+	        this.span = span;
+	        this.radian = radian;
+	    }
+	    LegPos.prototype.getPos = function () {
+	        var fid = (this.bug.route.length - this.bug.bone.length) * this.bug.step;
+	        var iid = Math.floor(fid);
+	        var n1 = iid % (this.span / 2);
+	        var n12 = fid % (this.span / 2);
+	        var n2 = iid % this.span;
+	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2);
+	        var p = this._getPos(pid);
+	        if (n1 < n2) {
+	            var p_1 = this._getPos(pid);
+	            var p2 = this._getPos(pid + this.span);
+	            var dx = (p2.x - p_1.x) * (n12 / (this.span / 2));
+	            var dy = (p2.y - p_1.y) * (n12 / (this.span / 2));
+	            // console.log('b : ' + n1);
+	            p_1.x += dx;
+	            p_1.y += dy;
+	            return p_1;
+	        }
+	        else {
+	            // console.log('a : ' + n1);
+	        }
+	        return p;
+	    };
+	    LegPos.prototype._getPos = function (id) {
+	        var p1 = this.bug.route[id];
+	        var p2 = this.bug.route[id + 1];
+	        if (!p2)
+	            p2 = this.bug.route[id - 1];
+	        var tx = p2.x - p1.x;
+	        var ty = p2.y - p1.y;
+	        var r = Math.atan2(ty, tx) + Math.PI / 2;
+	        return new UTILS.Pos(Math.cos(r) * this.radian + p1.x, Math.sin(r) * this.radian + p1.y);
+	    };
+	    return LegPos;
+	}());
+	exports.LegPos = LegPos;
 
 
 /***/ }

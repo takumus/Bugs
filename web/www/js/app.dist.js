@@ -62,8 +62,8 @@
 	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, Math.PI / 2), new UTILS.VecPos(800, 800, Math.PI / 2), 250, 250, 5).wave(10, 0.1);
-	    var bug = new bugs_1.Bug(30);
+	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, -Math.PI / 2), new UTILS.VecPos(800, 700, -Math.PI / 2), 150, 150, 5).wave(10, 0.1);
+	    var bug = new bugs_1.Bug(80);
 	    bug.setRoute(route);
 	    bug.render();
 	    stage.addChild(bug.graphics);
@@ -131,11 +131,13 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 0.5;
+	        var scale = 0.4;
 	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
 	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 100 * scale, -Math.PI / 2 - 0.5, 0);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 100 * scale, Math.PI / 2 + 0.5, 0);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 130 * scale, -Math.PI / 2 - 0.8, 0);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 130 * scale, Math.PI / 2 + 0.8, 0);
+	        _this.lp5 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 30 * scale, 100 * scale, -Math.PI / 2 - 0.5, 0);
+	        _this.lp6 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 5 * scale, 100 * scale, Math.PI / 2 + 0.5, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -159,16 +161,13 @@
 	            }
 	        }
 	        ;
-	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.1);
-	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.9);
-	        var p = this.lp.getPos();
-	        this.renderP(p);
-	        var p2 = this.lp2.getPos();
-	        this.renderP(p2);
-	        var p3 = this.lp3.getPos();
-	        this.renderP(p3);
-	        var p4 = this.lp4.getPos();
-	        this.renderP(p4);
+	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.15);
+	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.4);
+	        this.lp5.index = this.lp6.index = Math.floor(this.currentLength * 0.9);
+	        this.renderP(this.lp.getPos());
+	        this.renderP(this.lp2.getPos());
+	        this.renderP(this.lp3.getPos());
+	        this.renderP(this.lp4.getPos());
 	    };
 	    Bug.prototype.renderP = function (p) {
 	        var g = this._graphics;
@@ -265,7 +264,8 @@
 	        this._id = pid;
 	        if (nf < fid % this.span) {
 	            var ppos = this._getPos(pid + this.span);
-	            var p = nf / (this.span / 2);
+	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
+	            // p = nf / (this.span / 2);
 	            pos.x += (ppos.x - pos.x) * p;
 	            pos.y += (ppos.y - pos.y) * p;
 	            return pos;

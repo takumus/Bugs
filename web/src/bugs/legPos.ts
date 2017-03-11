@@ -23,7 +23,8 @@ export class LegPos {
         this._id = pid;
         if (nf < fid % this.span) {
             const ppos = this._getPos(pid + this.span);
-            const p = nf / (this.span / 2);
+            let p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
+            // p = nf / (this.span / 2);
             pos.x += (ppos.x - pos.x) * p;
             pos.y += (ppos.y - pos.y) * p;
             return pos;

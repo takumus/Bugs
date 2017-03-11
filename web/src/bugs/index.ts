@@ -8,10 +8,10 @@ export class Bug extends WORMS.Base {
     constructor(length: number) {
         super(length);
         this._graphics = new PIXI.Graphics();
-        this.lp = new LegPos(this, 40, 120, -Math.PI / 2 , 0, 10);
-        this.lp2 = new LegPos(this, 40, 120, Math.PI / 2 , 20, 10);
-        this.lp3 = new LegPos(this, 40, 120, Math.PI / 2, 0, 40);
-        this.lp4 = new LegPos(this, 40, 120, -Math.PI / 2, 20, 40);
+        this.lp = new LegPos(this, 40, 80, -Math.PI / 2 , 0, 0);
+        this.lp2 = new LegPos(this, 40, 80, Math.PI / 2 , 20, 0);
+        this.lp3 = new LegPos(this, 40, 80, Math.PI / 2, 0, 0);
+        this.lp4 = new LegPos(this, 40, 80, -Math.PI / 2, 20, 0);
     }
     public get graphics(): PIXI.Graphics {
         return this._graphics;
@@ -28,8 +28,12 @@ export class Bug extends WORMS.Base {
                 g.lineTo(pos.x, pos.y);
             }
         };
-        const bp1 = this.bone[Math.floor(this.currentLength * 0.7)];
-        const bp2 = this.bone[Math.floor(this.currentLength * 0.3)];
+        const id1 = Math.floor(this.currentLength * 0.1);
+        const id2 = Math.floor(this.currentLength * 0.9);
+        this.lp.beginOffset = this.lp2.beginOffset = id1;
+        this.lp3.beginOffset = this.lp4.beginOffset = id2;
+        const bp1 = this.bone[id1];
+        const bp2 = this.bone[id2];
         const p = this.lp.getPos();
         g.moveTo(bp1.x, bp1.y);
         g.lineTo(p.x, p.y);

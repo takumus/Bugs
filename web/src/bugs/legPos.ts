@@ -17,12 +17,11 @@ export class LegPos {
     }
     public getPos() {
         const fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
-        const id = Math.floor(fid);
         const nf = fid % (this.span / 2);
-        const pid = Math.floor(Math.floor(id / this.span) * this.span - this.spanOffset + this.beginOffset);
+        const pid = Math.floor(Math.floor(fid / this.span) * this.span - this.spanOffset + (this.bug.currentLength - this.beginOffset));
         const pos = this._getPos(pid);
         this._id = pid;
-        if (nf < id % this.span) {
+        if (nf < fid % this.span) {
             const ppos = this._getPos(pid + this.span);
             const p = nf / (this.span / 2);
             pos.x += (ppos.x - pos.x) * p;

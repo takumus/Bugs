@@ -131,10 +131,10 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        _this.lp = new legPos_1.LegPos(_this, 40, 120, -Math.PI / 2, 0, 10);
-	        _this.lp2 = new legPos_1.LegPos(_this, 40, 120, Math.PI / 2, 20, 10);
-	        _this.lp3 = new legPos_1.LegPos(_this, 40, 120, Math.PI / 2, 0, 40);
-	        _this.lp4 = new legPos_1.LegPos(_this, 40, 120, -Math.PI / 2, 20, 40);
+	        _this.lp = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 0, 0);
+	        _this.lp2 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 20, 0);
+	        _this.lp3 = new legPos_1.LegPos(_this, 40, 80, Math.PI / 2, 0, 0);
+	        _this.lp4 = new legPos_1.LegPos(_this, 40, 80, -Math.PI / 2, 20, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -158,8 +158,12 @@
 	            }
 	        }
 	        ;
-	        var bp1 = this.bone[Math.floor(this.currentLength * 0.7)];
-	        var bp2 = this.bone[Math.floor(this.currentLength * 0.3)];
+	        var id1 = Math.floor(this.currentLength * 0.1);
+	        var id2 = Math.floor(this.currentLength * 0.9);
+	        this.lp.beginOffset = this.lp2.beginOffset = id1;
+	        this.lp3.beginOffset = this.lp4.beginOffset = id2;
+	        var bp1 = this.bone[id1];
+	        var bp2 = this.bone[id2];
 	        var p = this.lp.getPos();
 	        g.moveTo(bp1.x, bp1.y);
 	        g.lineTo(p.x, p.y);
@@ -201,12 +205,11 @@
 	    }
 	    LegPos.prototype.getPos = function () {
 	        var fid = (this.bug.route.length - this.bug.currentLength) * this.bug.step + this.spanOffset;
-	        var id = Math.floor(fid);
 	        var nf = fid % (this.span / 2);
-	        var pid = Math.floor(Math.floor(id / this.span) * this.span - this.spanOffset + this.beginOffset);
+	        var pid = Math.floor(Math.floor(fid / this.span) * this.span - this.spanOffset + (this.bug.currentLength - this.beginOffset));
 	        var pos = this._getPos(pid);
 	        this._id = pid;
-	        if (nf < id % this.span) {
+	        if (nf < fid % this.span) {
 	            var ppos = this._getPos(pid + this.span);
 	            var p = nf / (this.span / 2);
 	            pos.x += (ppos.x - pos.x) * p;

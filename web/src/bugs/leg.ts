@@ -36,18 +36,19 @@ export class Leg {
         const a = fromPos.distance(toPos);
         let b = this._length1;
         let c = this._length2;
-        if (b + c < a * 1.1) {
+        const minA = a * 1.02;
+        if (b + c < minA) {
             const ratio = b / (b + c);
-            b = ratio * (a * 1.1);
-            c = a * 1.1 - b;
+            b = ratio * minA;
+            c = minA - b;
         }
         const ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
         const rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
         const rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
         const rr = r + (this._flip ? rc : -rc);
         console.log(rc, a, b, c);
-        const x = Math.cos(rr) * this._length1 + fromPos.x;
-        const y = Math.sin(rr) * this._length1 + fromPos.y;
+        const x = Math.cos(rr) * b + fromPos.x;
+        const y = Math.sin(rr) * b + fromPos.y;
         return {
             begin: fromPos,
             middle: new UTILS.Pos(x, y),

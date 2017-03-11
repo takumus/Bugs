@@ -203,18 +203,19 @@
 	        var a = fromPos.distance(toPos);
 	        var b = this._length1;
 	        var c = this._length2;
-	        if (b + c < a * 1.1) {
+	        var minA = a * 1.02;
+	        if (b + c < minA) {
 	            var ratio = b / (b + c);
-	            b = ratio * (a * 1.1);
-	            c = a * 1.1 - b;
+	            b = ratio * minA;
+	            c = minA - b;
 	        }
 	        var ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
 	        var rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
 	        var rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
 	        var rr = r + (this._flip ? rc : -rc);
 	        console.log(rc, a, b, c);
-	        var x = Math.cos(rr) * this._length1 + fromPos.x;
-	        var y = Math.sin(rr) * this._length1 + fromPos.y;
+	        var x = Math.cos(rr) * b + fromPos.x;
+	        var y = Math.sin(rr) * b + fromPos.y;
 	        return {
 	            begin: fromPos,
 	            middle: new UTILS.Pos(x, y),

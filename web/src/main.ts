@@ -21,7 +21,7 @@ function initBugs(): void {
         200,
         5
     ).wave(10, 0.1);
-    const bug = new Bug(44);
+    const bug = new Bug(60);
     bug.setRoute(route);
     bug.render();
     stage.addChild(bug.graphics);

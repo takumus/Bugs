@@ -63,7 +63,7 @@
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
 	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 200, 200, 5).wave(10, 0.1);
-	    var bug = new bugs_1.Bug(44);
+	    var bug = new bugs_1.Bug(60);
 	    bug.setRoute(route);
 	    bug.render();
 	    stage.addChild(bug.graphics);
@@ -157,9 +157,15 @@
 	        var p = this.lp.getPos();
 	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
 	        g.lineTo(p.x, p.y);
+	        g.drawCircle(p.x, p.y, 5);
 	        var p2 = this.lp2.getPos();
 	        g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
 	        g.lineTo(p2.x, p2.y);
+	        g.drawCircle(p2.x, p2.y, 5);
+	        var pp = this.route[this.lp.id];
+	        g.drawCircle(pp.x, pp.y, 10);
+	        var pp2 = this.route[this.lp2.id];
+	        g.drawCircle(pp2.x, pp2.y, 10);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -189,6 +195,7 @@
 	        var pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2) - this.spanOffset;
 	        console.log(pid);
 	        var p = this._getPos(pid);
+	        this._id = pid;
 	        if (n1 < n2) {
 	            var p_1 = this._getPos(pid);
 	            var p2 = this._getPos(pid + this.span);
@@ -214,6 +221,13 @@
 	        var r = Math.atan2(ty, tx) + this.radianOffset;
 	        return new UTILS.Pos(Math.cos(r) * this.radius + p1.x, Math.sin(r) * this.radius + p1.y);
 	    };
+	    Object.defineProperty(LegPos.prototype, "id", {
+	        get: function () {
+	            return this._id;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    return LegPos;
 	}());
 	exports.LegPos = LegPos;

@@ -26,9 +26,17 @@ export class Bug extends WORMS.Base {
         const p = this.lp.getPos();
         g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
         g.lineTo(p.x, p.y);
+        g.drawCircle(p.x, p.y, 5);
 
         const p2 = this.lp2.getPos();
         g.moveTo(this.bone[this.bone.length / 2].x, this.bone[this.bone.length / 2].y);
         g.lineTo(p2.x, p2.y);
+        g.drawCircle(p2.x, p2.y, 5);
+
+        const pp = this.route[this.lp.id];
+        g.drawCircle(pp.x, pp.y, 10);
+
+        const pp2 = this.route[this.lp2.id];
+        g.drawCircle(pp2.x, pp2.y, 10);
     }
 }

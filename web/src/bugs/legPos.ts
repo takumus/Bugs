@@ -5,6 +5,7 @@ export class LegPos {
     private radius: number;
     private radianOffset: number;
     private spanOffset: number;
+    private _id: number;
     constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number) {
         this.bug = bug;
         this.span = span;
@@ -21,7 +22,7 @@ export class LegPos {
         const pid = Math.floor(Math.floor(iid / this.span) * this.span + this.bug.bone.length / 2) - this.spanOffset;
         console.log(pid);
         const p = this._getPos(pid);
-
+        this._id = pid;
         if (n1 < n2) {
             const p = this._getPos(pid);
             const p2 = this._getPos(pid + this.span);
@@ -47,5 +48,8 @@ export class LegPos {
             Math.cos(r) * this.radius + p1.x,
             Math.sin(r) * this.radius + p1.y
         );
+    }
+    public get id(): number {
+        return this._id;
     }
 }

@@ -46,7 +46,6 @@ export class Leg {
         const rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
         const rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
         const rr = r + (this._flip ? rc : -rc);
-        console.log(rc, a, b, c);
         const x = Math.cos(rr) * b + fromPos.x;
         const y = Math.sin(rr) * b + fromPos.y;
         return {

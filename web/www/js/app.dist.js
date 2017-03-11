@@ -151,42 +151,6 @@
 	                g.lineTo(pos.x, pos.y);
 	            }
 	        });
-	        var span = 40;
-	        var n = Math.floor((this.route.length - this.bone.length) * this.step);
-	        var n1 = n % (span / 4);
-	        var n12 = (this.route.length - this.bone.length) * this.step % (span / 4);
-	        var n2 = n % (span / 2);
-	        var id = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
-	        var p = this.getPos(id);
-	        //g.drawCircle(p.x, p.y, 2);
-	        var lp = this.bone[this.bone.length / 2]; // this.route[Math.floor(n + this.bone.length / 2)];
-	        if (n1 < n2) {
-	            var id_1 = Math.floor(n / (span / 2)) * (span / 2) + Math.floor(this.bone.length / 2);
-	            var p_1 = this.getPos(id_1);
-	            var p2 = this.getPos(id_1 + span / 2);
-	            var dx = (p2.x - p_1.x) * (n12 / (span / 4));
-	            var dy = (p2.y - p_1.y) * (n12 / (span / 4));
-	            g.moveTo(lp.x, lp.y);
-	            g.lineTo(p_1.x + dx, p_1.y + dy);
-	            console.log('b : ' + n1);
-	        }
-	        else {
-	            console.log('a : ' + n1);
-	            g.moveTo(lp.x, lp.y);
-	            g.lineTo(p.x, p.y);
-	        }
-	        // g.moveTo(lp.x, lp.y);
-	        // g.lineTo(x, y);
-	    };
-	    Bug.prototype.getPos = function (id) {
-	        var id2 = id + 1;
-	        console.log(id2);
-	        var p1 = this.route[id];
-	        var p2 = this.route[id2];
-	        var tx = p2.x - p1.x;
-	        var ty = p2.y - p1.y;
-	        var r = Math.atan2(ty, tx) + Math.PI / 2;
-	        return new UTILS.Pos(Math.cos(r) * 80 + p1.x, Math.sin(r) * 80 + p2.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));

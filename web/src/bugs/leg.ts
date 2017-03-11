@@ -24,7 +24,7 @@ export class Leg {
         index: number) {
             this._bug = bug;
             this._flip = flip;
-            this._index = index;
+            this._index = Math.floor(index);
             this._length1 = length1;
             this._length2 = length2;
             this._legPos = new LegPos(bug, span, radius, rotationOffset, spanOffset, index);
@@ -56,5 +56,9 @@ export class Leg {
     }
     public get legPos(): LegPos {
         return this._legPos;
+    }
+    public set index(value: number) {
+        this._legPos.beginOffset = value;
+        this._index = value;
     }
 }

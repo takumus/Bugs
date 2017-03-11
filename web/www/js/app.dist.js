@@ -62,8 +62,8 @@
 	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 250, 250, 5);
-	    var bug = new bugs_1.Bug(60);
+	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, Math.PI / 2), new UTILS.VecPos(800, 800, Math.PI / 2), 250, 250, 5).wave(10, 0.1);
+	    var bug = new bugs_1.Bug(30);
 	    bug.setRoute(route);
 	    bug.render();
 	    stage.addChild(bug.graphics);
@@ -131,8 +131,11 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        _this.lp = new leg_1.Leg(_this, true, 120, 120, 80, 40, 100, -Math.PI / 2, 0);
-	        _this.lp2 = new leg_1.Leg(_this, false, 120, 120, 80, 0, 100, Math.PI / 2, 0);
+	        var scale = 0.5;
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 100 * scale, -Math.PI / 2 - 0.5, 0);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 100 * scale, Math.PI / 2 + 0.5, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -156,19 +159,22 @@
 	            }
 	        }
 	        ;
-	        var id1 = Math.floor(this.currentLength * 0.1);
-	        var id2 = Math.floor(this.currentLength * 0.9);
-	        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = id1;
-	        var bp1 = this.bone[id1];
-	        var bp2 = this.bone[id2];
+	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.1);
+	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.9);
 	        var p = this.lp.getPos();
+	        this.renderP(p);
+	        var p2 = this.lp2.getPos();
+	        this.renderP(p2);
+	        var p3 = this.lp3.getPos();
+	        this.renderP(p3);
+	        var p4 = this.lp4.getPos();
+	        this.renderP(p4);
+	    };
+	    Bug.prototype.renderP = function (p) {
+	        var g = this._graphics;
 	        g.moveTo(p.begin.x, p.begin.y);
 	        g.lineTo(p.middle.x, p.middle.y);
 	        g.lineTo(p.end.x, p.end.y);
-	        var p2 = this.lp2.getPos();
-	        g.moveTo(p2.begin.x, p2.begin.y);
-	        g.lineTo(p2.middle.x, p2.middle.y);
-	        g.lineTo(p2.end.x, p2.end.y);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -186,7 +192,7 @@
 	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, index) {
 	        this._bug = bug;
 	        this._flip = flip;
-	        this._index = index;
+	        this._index = Math.floor(index);
 	        this._length1 = length1;
 	        this._length2 = length2;
 	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, index);
@@ -219,6 +225,14 @@
 	    Object.defineProperty(Leg.prototype, "legPos", {
 	        get: function () {
 	            return this._legPos;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Leg.prototype, "index", {
+	        set: function (value) {
+	            this._legPos.beginOffset = value;
+	            this._index = value;
 	        },
 	        enumerable: true,
 	        configurable: true

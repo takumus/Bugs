@@ -15,13 +15,13 @@ function initBugs(): void {
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
     const route = ROUTES.RouteGenerator.getMinimumRoute(
-        new UTILS.VecPos(200, 200, 0),
-        new UTILS.VecPos(800, 800, -Math.PI),
+        new UTILS.VecPos(200, 200, Math.PI / 2),
+        new UTILS.VecPos(800, 800, Math.PI / 2),
         250,
         250,
         5
-    );
-    const bug = new Bug(60);
+    ).wave(10, 0.1);
+    const bug = new Bug(30);
     bug.setRoute(route);
     bug.render();
     stage.addChild(bug.graphics);

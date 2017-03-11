@@ -1,14 +1,19 @@
 import {LegPos} from './legPos';
-import {Leg} from './leg';
+import {Leg, PosSet} from './leg';
 export class Bug extends WORMS.Base {
     private _graphics: PIXI.Graphics;
     private lp: Leg;
     private lp2: Leg;
+    private lp3: Leg;
+    private lp4: Leg;
     constructor(length: number) {
         super(length);
         this._graphics = new PIXI.Graphics();
-        this.lp = new Leg(this, true, 120, 120, 80, 40, 100, -Math.PI / 2, 0);
-        this.lp2 = new Leg(this, false, 120, 120, 80, 0, 100, Math.PI / 2, 0);
+        const scale = 0.5;
+        this.lp = new Leg(this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
+        this.lp2 = new Leg(this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
+        this.lp3 = new Leg(this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 100 * scale, -Math.PI / 2 - 0.5, 0);
+        this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 100 * scale, Math.PI / 2 + 0.5, 0);
     }
     public get graphics(): PIXI.Graphics {
         return this._graphics;
@@ -25,19 +30,24 @@ export class Bug extends WORMS.Base {
                 g.lineTo(pos.x, pos.y);
             }
         };
-        const id1 = Math.floor(this.currentLength * 0.1);
-        const id2 = Math.floor(this.currentLength * 0.9);
-        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = id1;
-        const bp1 = this.bone[id1];
-        const bp2 = this.bone[id2];
+        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.1);
+        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.9);
         const p = this.lp.getPos();
+        this.renderP(p);
+
+        const p2 = this.lp2.getPos();
+        this.renderP(p2);
+
+        const p3 = this.lp3.getPos();
+        this.renderP(p3);
+
+        const p4 = this.lp4.getPos();
+        this.renderP(p4);
+    }
+    private renderP(p: PosSet): void {
+        const g = this._graphics;
         g.moveTo(p.begin.x, p.begin.y);
         g.lineTo(p.middle.x, p.middle.y);
         g.lineTo(p.end.x, p.end.y);
-
-        const p2 = this.lp2.getPos();
-        g.moveTo(p2.begin.x, p2.begin.y);
-        g.lineTo(p2.middle.x, p2.middle.y);
-        g.lineTo(p2.end.x, p2.end.y);
     }
 }

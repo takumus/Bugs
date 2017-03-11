@@ -34,13 +34,18 @@ export class Leg {
         const toPos = this._legPos.getPos();
         const r = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
         const a = fromPos.distance(toPos);
-        const b = this._length1;
-        const c = this._length2;
+        let b = this._length1;
+        let c = this._length2;
+        if (b + c < a * 1.1) {
+            const ratio = b / (b + c);
+            b = ratio * (a * 1.1);
+            c = a * 1.1 - b;
+        }
         const ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
         const rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
         const rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
         const rr = r + (this._flip ? rc : -rc);
-        console.log(rc);
+        console.log(rc, a, b, c);
         const x = Math.cos(rr) * this._length1 + fromPos.x;
         const y = Math.sin(rr) * this._length1 + fromPos.y;
         return {

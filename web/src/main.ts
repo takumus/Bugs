@@ -17,10 +17,10 @@ function initBugs(): void {
     const route = ROUTES.RouteGenerator.getMinimumRoute(
         new UTILS.VecPos(200, 200, 0),
         new UTILS.VecPos(800, 800, -Math.PI),
-        200,
-        200,
+        250,
+        250,
         5
-    ).wave(10, 0.1);
+    );
     const bug = new Bug(60);
     bug.setRoute(route);
     bug.render();

@@ -62,7 +62,7 @@
 	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 200, 200, 5).wave(10, 0.1);
+	    var route = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(200, 200, 0), new UTILS.VecPos(800, 800, -Math.PI), 250, 250, 5);
 	    var bug = new bugs_1.Bug(60);
 	    bug.setRoute(route);
 	    bug.render();
@@ -198,11 +198,16 @@
 	        var a = fromPos.distance(toPos);
 	        var b = this._length1;
 	        var c = this._length2;
+	        if (b + c < a * 1.1) {
+	            var ratio = b / (b + c);
+	            b = ratio * (a * 1.1);
+	            c = a * 1.1 - b;
+	        }
 	        var ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
 	        var rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
 	        var rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
 	        var rr = r + (this._flip ? rc : -rc);
-	        console.log(rc);
+	        console.log(rc, a, b, c);
 	        var x = Math.cos(rr) * this._length1 + fromPos.x;
 	        var y = Math.sin(rr) * this._length1 + fromPos.y;
 	        return {

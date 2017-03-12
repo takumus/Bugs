@@ -9,7 +9,7 @@ export class Bug extends WORMS.Base {
     constructor(length: number, span: number) {
         super(length);
         this._graphics = new PIXI.Graphics();
-        const scale = 0.6;
+        const scale = 0.7;
         this.lp  = new Leg(this, false, 100 * scale, 100 * scale, span, span * 0.5 , 110 * scale, -Math.PI / 2 + 0.8, 0);
         this.lp2 = new Leg(this, true,  100 * scale, 100 * scale, span, 0          , 110 * scale, Math.PI / 2 - 0.8, 0);
         this.lp3 = new Leg(this, true,  100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);
@@ -32,7 +32,9 @@ export class Bug extends WORMS.Base {
         };
         this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.3);
         this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
+
         this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.5);
+        this.lp3.legPos.beginOffset = this.lp4.legPos.beginOffset = Math.floor(this.currentLength * 0.45);
 
         g.lineStyle(6, 0x333333);
         this.renderP(this.lp.getPos());

@@ -68,7 +68,7 @@
 	    var next = function () {
 	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
 	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 200, 200, 5).wave(20, 0.1);
-	        while (route.length % 50 != 0) {
+	        while (route.length % 40 != 0) {
 	            route.pop();
 	        }
 	        if (route.length == 0) {
@@ -153,10 +153,11 @@
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
 	        var scale = 1;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 160 * scale, -Math.PI / 2 + 1.0, 0);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 160 * scale, Math.PI / 2 - 1.0, 0);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
+	        var span = 40;
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span * scale, span * 0.5 * scale, 100 * scale, -Math.PI / 2 + 0.8, 0);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span * scale, 0 * scale, 100 * scale, Math.PI / 2 - 0.8, 0);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span * scale, span * 0.05 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span * scale, span * 0.55 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -180,8 +181,9 @@
 	            }
 	        }
 	        ;
-	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.15);
-	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.4);
+	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.4);
+	        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
+	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.8);
 	        this.renderP(this.lp.getPos());
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
@@ -275,16 +277,13 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var LegPos = (function () {
-	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset, baseId) {
-	        if (baseId === void 0) { baseId = 0; }
+	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset) {
 	        this.bug = bug;
 	        this.span = span;
 	        this.radius = radius;
 	        this.radianOffset = radianOffset;
 	        this.spanOffset = spanOffset % span;
 	        this.beginOffset = beginOffset;
-	        this._baseId = 0;
-	        this._diff = 0;
 	    }
 	    LegPos.prototype.getPos = function () {
 	        this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;

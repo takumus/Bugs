@@ -8,16 +8,13 @@ export class LegPos {
     public beginOffset: number;
     private _id: number;
     private _baseId: number;
-    private _diff: number;
-    constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number, beginOffset: number, baseId: number = 0) {
+    constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number, beginOffset: number) {
         this.bug = bug;
         this.span = span;
         this.radius = radius;
         this.radianOffset = radianOffset;
         this.spanOffset = spanOffset % span;
         this.beginOffset = beginOffset;
-        this._baseId = 0;
-        this._diff = 0;
     }
     public getPos() {
         this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;

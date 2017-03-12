@@ -27,7 +27,7 @@ function initBugs(): void {
             200,
             5
         ).wave(20, 0.1);
-        while (route.length % 50 != 0) {
+        while (route.length % 40 != 0) {
             route.pop();
         }
         if (route.length == 0) {

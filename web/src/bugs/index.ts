@@ -10,10 +10,11 @@ export class Bug extends WORMS.Base {
         super(length);
         this._graphics = new PIXI.Graphics();
         const scale = 1;
-        this.lp = new Leg(this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 160 * scale, -Math.PI / 2 + 1.0, 0);
-        this.lp2 = new Leg(this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 160 * scale, Math.PI / 2 - 1.0, 0);
-        this.lp3 = new Leg(this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
-        this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
+        const span = 40;
+        this.lp  = new Leg(this, false, 100 * scale, 100 * scale, span * scale, span * 0.5 * scale,  100 * scale, -Math.PI / 2 + 0.8, 0);
+        this.lp2 = new Leg(this, true,  100 * scale, 100 * scale, span * scale, 0 * scale,           100 * scale, Math.PI / 2 - 0.8, 0);
+        this.lp3 = new Leg(this, true,  100 * scale, 120 * scale, span * scale, span * 0.05 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
+        this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, span * scale, span * 0.55 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
     }
     public get graphics(): PIXI.Graphics {
         return this._graphics;
@@ -30,8 +31,9 @@ export class Bug extends WORMS.Base {
                 g.lineTo(pos.x, pos.y);
             }
         };
-        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.15);
-        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.4);
+        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.4);
+        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
+        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.8);
 
         this.renderP(this.lp.getPos());
         this.renderP(this.lp2.getPos());

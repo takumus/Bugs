@@ -53,22 +53,20 @@
 	var stageWidth = 0, stageHeight = 0;
 	var mouse = new UTILS.Pos();
 	var props = {
-	    time: 900,
-	    delay: 200,
-	    S: 0.27,
-	    V: 0.80
+	    speed: 16
 	};
 	function initBugs() {
 	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var bug = new bugs_1.Bug(50);
+	    var bug = new bugs_1.Bug(60, 30);
 	    stage.addChild(bug.graphics);
 	    var pVecPos = new UTILS.VecPos(200, 200, 0);
+	    var mousePos = new UTILS.VecPos();
 	    var next = function () {
-	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
-	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 200, 200, 5).wave(20, 0.1);
-	        while (route.length % 40 != 0) {
+	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
+	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 120 * Math.random() + 100, 120 * Math.random() + 100, 5).wave(20, 0.1);
+	        while (route.length % Math.floor(30) != 0) {
 	            route.pop();
 	        }
 	        if (route.length == 0) {
@@ -80,25 +78,25 @@
 	        guide.render(route);
 	        bug.setRoute(bug.getCurrentLine().pushLine(route));
 	        new TWEEN.Tween({ s: 0 })
-	            .to({ s: 1 }, 4000)
+	            .to({ s: 1 }, bug.route.length * props.speed)
 	            .onUpdate(function () {
 	            bug.setStep(this.s);
 	            bug.render();
 	        })
 	            .onComplete(function () {
-	            // next();
+	            next();
 	        })
 	            .start();
 	    };
 	    next();
-	    window.addEventListener('mousedown', function () {
-	        next();
+	    window.addEventListener('mousedown', function (e) {
+	        mousePos.pos.x = e.clientX;
+	        mousePos.pos.y = e.clientY;
 	    });
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();
-	    gui.add(props, 'S', 0, 1);
-	    gui.add(props, 'V', 0, 1);
+	    gui.add(props, 'speed', 0, 100);
 	}
 	function initPIXI() {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: false, resolution: 2, transparent: false, backgroundColor: 0xFFFFFF });
@@ -149,15 +147,14 @@
 	var leg_1 = __webpack_require__(2);
 	var Bug = (function (_super) {
 	    __extends(Bug, _super);
-	    function Bug(length) {
+	    function Bug(length, span) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 1;
-	        var span = 40;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span * scale, span * 0.5 * scale, 100 * scale, -Math.PI / 2 + 0.8, 0);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span * scale, 0 * scale, 100 * scale, Math.PI / 2 - 0.8, 0);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span * scale, span * 0.05 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span * scale, span * 0.55 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
+	        var scale = 0.6;
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8, 0);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8, 0);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -170,10 +167,10 @@
 	    Bug.prototype.render = function () {
 	        var g = this._graphics;
 	        g.clear();
-	        g.lineStyle(6, 0xff0000);
-	        for (var i = 0; i < this.currentLength; i++) {
+	        g.lineStyle(6, 0x333333);
+	        for (var i = Math.floor(this.currentLength * 0.2); i < Math.floor(this.currentLength * 0.6); i++) {
 	            var pos = this.bone[i];
-	            if (i == 0) {
+	            if (i == Math.floor(this.currentLength * 0.2)) {
 	                g.moveTo(pos.x, pos.y);
 	            }
 	            else {
@@ -181,9 +178,10 @@
 	            }
 	        }
 	        ;
-	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.4);
+	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.3);
 	        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
-	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.8);
+	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.5);
+	        g.lineStyle(6, 0x333333);
 	        this.renderP(this.lp.getPos());
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
@@ -203,6 +201,7 @@
 	        g.moveTo(p.begin.x, p.begin.y);
 	        g.lineTo(p.middle.x, p.middle.y);
 	        g.lineTo(p.end.x, p.end.y);
+	        g.drawCircle(p.end.x, p.end.y, 4);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -296,6 +295,7 @@
 	        if (nf < nf2) {
 	            var ppos = this._getPos(pid + this.span);
 	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
+	            p = Math.pow(p, 2);
 	            // p = nf / (this.span / 2);
 	            pos.x += (ppos.x - pos.x) * p;
 	            pos.y += (ppos.y - pos.y) * p;

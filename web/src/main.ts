@@ -5,29 +5,27 @@ let canvas: HTMLCanvasElement;
 let stageWidth: number = 0, stageHeight: number = 0;
 const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
-    time: 900,
-    delay: 200,
-    S: 0.27,
-    V: 0.80
+    speed: 16
 }
 function initBugs(): void {
     const guide = new ROUTES.Debugger();
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
-    const bug = new Bug(50);
+    const bug = new Bug(60, 30);
     stage.addChild(bug.graphics);
 
     let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 200, 0);
+    let mousePos: UTILS.VecPos = new UTILS.VecPos();
     const next = () => {
-        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
+        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
         const route = ROUTES.RouteGenerator.getMinimumRoute(
             bug.getHeadVecPos(),
             nVecPos,
-            200,
-            200,
+            120 * Math.random() + 100,
+            120 * Math.random() + 100,
             5
         ).wave(20, 0.1);
-        while (route.length % 40 != 0) {
+        while (route.length % Math.floor(30) != 0) {
             route.pop();
         }
         if (route.length == 0) {
@@ -39,25 +37,25 @@ function initBugs(): void {
         guide.render(route);
         bug.setRoute(bug.getCurrentLine().pushLine(route));
         new TWEEN.Tween({s: 0})
-        .to({s: 1}, 4000)
+        .to({s: 1}, bug.route.length * props.speed)
         .onUpdate(function(): void {
             bug.setStep(this.s);
             bug.render();
         })
         .onComplete(function(): void {
-            // next();
+            next();
         })
         .start();
     }
     next();
-    window.addEventListener('mousedown', () => {
-        next();
+    window.addEventListener('mousedown', (e) => {
+        mousePos.pos.x = e.clientX;
+        mousePos.pos.y = e.clientY;
     })
 }
 function initGUI(): void {
     const gui = new dat.GUI();
-    gui.add(props, 'S', 0, 1);
-    gui.add(props, 'V', 0, 1);
+    gui.add(props, 'speed', 0, 100);
 }
 function initPIXI(): void {
     renderer = PIXI.autoDetectRenderer(800, 800, {antialias: false, resolution: 2, transparent: false, backgroundColor: 0xFFFFFF});

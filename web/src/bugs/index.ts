@@ -6,15 +6,14 @@ export class Bug extends WORMS.Base {
     private lp2: Leg;
     private lp3: Leg;
     private lp4: Leg;
-    constructor(length: number) {
+    constructor(length: number, span: number) {
         super(length);
         this._graphics = new PIXI.Graphics();
-        const scale = 1;
-        const span = 40;
-        this.lp  = new Leg(this, false, 100 * scale, 100 * scale, span * scale, span * 0.5 * scale,  100 * scale, -Math.PI / 2 + 0.8, 0);
-        this.lp2 = new Leg(this, true,  100 * scale, 100 * scale, span * scale, 0 * scale,           100 * scale, Math.PI / 2 - 0.8, 0);
-        this.lp3 = new Leg(this, true,  100 * scale, 120 * scale, span * scale, span * 0.05 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
-        this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, span * scale, span * 0.55 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
+        const scale = 0.6;
+        this.lp  = new Leg(this, false, 100 * scale, 100 * scale, span, span * 0.5 , 110 * scale, -Math.PI / 2 + 0.8, 0);
+        this.lp2 = new Leg(this, true,  100 * scale, 100 * scale, span, 0          , 110 * scale, Math.PI / 2 - 0.8, 0);
+        this.lp3 = new Leg(this, true,  100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);
+        this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8, 0);
     }
     public get graphics(): PIXI.Graphics {
         return this._graphics;
@@ -22,19 +21,20 @@ export class Bug extends WORMS.Base {
     public render() {
         const g = this._graphics;
         g.clear();
-        g.lineStyle(6, 0xff0000);
-        for (let i = 0; i < this.currentLength; i ++) {
+        g.lineStyle(6, 0x333333);
+        for (let i = Math.floor(this.currentLength * 0.2); i < Math.floor(this.currentLength * 0.6); i ++) {
             const pos = this.bone[i];
-            if (i == 0) {
+            if (i == Math.floor(this.currentLength * 0.2)) {
                 g.moveTo(pos.x, pos.y);
             }else {
                 g.lineTo(pos.x, pos.y);
             }
         };
-        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.4);
+        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.3);
         this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
-        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.8);
+        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.5);
 
+        g.lineStyle(6, 0x333333);
         this.renderP(this.lp.getPos());
         this.renderP(this.lp2.getPos());
         this.renderP(this.lp3.getPos());
@@ -54,5 +54,6 @@ export class Bug extends WORMS.Base {
         g.moveTo(p.begin.x, p.begin.y);
         g.lineTo(p.middle.x, p.middle.y);
         g.lineTo(p.end.x, p.end.y);
+        g.drawCircle(p.end.x, p.end.y, 4);
     }
 }

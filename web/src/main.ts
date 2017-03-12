@@ -21,28 +21,38 @@ function initBugs(): void {
     const next = () => {
         const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
         const route = ROUTES.RouteGenerator.getMinimumRoute(
-            pVecPos,
+            bug.getHeadVecPos(),
             nVecPos,
             200,
             200,
             5
         ).wave(20, 0.1);
+        while (route.length % 50 != 0) {
+            route.pop();
+        }
+        if (route.length == 0) {
+            next();
+            return;
+        }
         pVecPos = nVecPos;
         guide.clear();
         guide.render(route);
         bug.setRoute(bug.getCurrentLine().pushLine(route));
         new TWEEN.Tween({s: 0})
-        .to({s: 1}, 3000)
+        .to({s: 1}, 4000)
         .onUpdate(function(): void {
             bug.setStep(this.s);
             bug.render();
         })
         .onComplete(function(): void {
-            next();
+            // next();
         })
         .start();
     }
     next();
+    window.addEventListener('mousedown', () => {
+        next();
+    })
 }
 function initGUI(): void {
     const gui = new dat.GUI();

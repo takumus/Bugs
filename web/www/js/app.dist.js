@@ -67,23 +67,33 @@
 	    var pVecPos = new UTILS.VecPos(200, 200, 0);
 	    var next = function () {
 	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
-	        var route = ROUTES.RouteGenerator.getMinimumRoute(pVecPos, nVecPos, 200, 200, 5).wave(20, 0.1);
+	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 200, 200, 5).wave(20, 0.1);
+	        while (route.length % 50 != 0) {
+	            route.pop();
+	        }
+	        if (route.length == 0) {
+	            next();
+	            return;
+	        }
 	        pVecPos = nVecPos;
 	        guide.clear();
 	        guide.render(route);
 	        bug.setRoute(bug.getCurrentLine().pushLine(route));
 	        new TWEEN.Tween({ s: 0 })
-	            .to({ s: 1 }, 3000)
+	            .to({ s: 1 }, 4000)
 	            .onUpdate(function () {
 	            bug.setStep(this.s);
 	            bug.render();
 	        })
 	            .onComplete(function () {
-	            next();
+	            // next();
 	        })
 	            .start();
 	    };
 	    next();
+	    window.addEventListener('mousedown', function () {
+	        next();
+	    });
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();
@@ -143,8 +153,8 @@
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
 	        var scale = 1;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 160 * scale, -Math.PI / 2 + 1.0, 0);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 160 * scale, Math.PI / 2 - 1.0, 0);
 	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
 	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
 	        return _this;
@@ -178,7 +188,13 @@
 	        this.renderP(this.lp4.getPos());
 	    };
 	    Bug.prototype.setRoute = function (route, nextLength) {
+	        var d = this.lp.legPos.idDiff;
+	        console.log(d);
 	        _super.prototype.setRoute.call(this, route, nextLength);
+	        // this.lp.legPos.idDiff = d;
+	        // this.lp2.legPos.idDiff = d;
+	        // this.lp3.legPos.idDiff = d;
+	        // this.lp4.legPos.idDiff = d;
 	    };
 	    Bug.prototype.renderP = function (p) {
 	        var g = this._graphics;
@@ -268,6 +284,7 @@
 	        this.spanOffset = spanOffset % span;
 	        this.beginOffset = beginOffset;
 	        this._baseId = 0;
+	        this._diff = 0;
 	    }
 	    LegPos.prototype.getPos = function () {
 	        this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
@@ -307,9 +324,14 @@
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(LegPos.prototype, "baseId", {
+	    Object.defineProperty(LegPos.prototype, "idDiff", {
 	        get: function () {
-	            return this._baseId;
+	            if (!this.bug.route)
+	                return 0;
+	            return (this._baseId + this.spanOffset) % (this.span / 2);
+	        },
+	        set: function (v) {
+	            this.beginOffset -= v;
 	        },
 	        enumerable: true,
 	        configurable: true

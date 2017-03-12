@@ -8,6 +8,7 @@ export class LegPos {
     public beginOffset: number;
     private _id: number;
     private _baseId: number;
+    private _diff: number;
     constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number, beginOffset: number, baseId: number = 0) {
         this.bug = bug;
         this.span = span;
@@ -16,9 +17,11 @@ export class LegPos {
         this.spanOffset = spanOffset % span;
         this.beginOffset = beginOffset;
         this._baseId = 0;
+        this._diff = 0;
     }
     public getPos() {
         this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
+
         const fid = this._baseId + this.spanOffset;
         const nf = (fid) % (this.span / 2);
         const nf2 = (fid) % this.span;
@@ -52,7 +55,11 @@ export class LegPos {
     public get id(): number {
         return this._id;
     }
-    public get baseId(): number {
-        return this._baseId;
+    public get idDiff(): number {
+        if (!this.bug.route) return 0;
+        return (this._baseId + this.spanOffset) % (this.span / 2);
+    }
+    public set idDiff(v: number) {
+        this.beginOffset -= v;
     }
 }

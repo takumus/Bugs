@@ -10,8 +10,8 @@ export class Bug extends WORMS.Base {
         super(length);
         this._graphics = new PIXI.Graphics();
         const scale = 1;
-        this.lp = new Leg(this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
-        this.lp2 = new Leg(this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
+        this.lp = new Leg(this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 160 * scale, -Math.PI / 2 + 1.0, 0);
+        this.lp2 = new Leg(this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 160 * scale, Math.PI / 2 - 1.0, 0);
         this.lp3 = new Leg(this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
         this.lp4 = new Leg(this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
     }
@@ -39,7 +39,13 @@ export class Bug extends WORMS.Base {
         this.renderP(this.lp4.getPos());
     }
     public setRoute(route: ROUTES.Line, nextLength?: number): void {
+        const d = this.lp.legPos.idDiff;
+        console.log(d);
         super.setRoute(route, nextLength);
+        // this.lp.legPos.idDiff = d;
+        // this.lp2.legPos.idDiff = d;
+        // this.lp3.legPos.idDiff = d;
+        // this.lp4.legPos.idDiff = d;
     }
     private renderP(p: PosSet): void {
         const g = this._graphics;

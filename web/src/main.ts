@@ -30,7 +30,7 @@ function initBugs(): void {
         pVecPos = nVecPos;
         guide.clear();
         guide.render(route);
-        bug.setRoute(bug.getCurrentLine().pushLine(route));
+        bug.setRoute(route);
         new TWEEN.Tween({s: 0})
         .to({s: 1}, 3000)
         .onUpdate(function(): void {
@@ -38,7 +38,6 @@ function initBugs(): void {
             bug.render();
         })
         .onComplete(function(): void {
-            next();
         })
         .start();
     }

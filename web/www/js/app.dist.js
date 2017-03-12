@@ -71,7 +71,7 @@
 	        pVecPos = nVecPos;
 	        guide.clear();
 	        guide.render(route);
-	        bug.setRoute(bug.getCurrentLine().pushLine(route));
+	        bug.setRoute(route);
 	        new TWEEN.Tween({ s: 0 })
 	            .to({ s: 1 }, 3000)
 	            .onUpdate(function () {
@@ -79,7 +79,6 @@
 	            bug.render();
 	        })
 	            .onComplete(function () {
-	            next();
 	        })
 	            .start();
 	    };
@@ -122,7 +121,7 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	"use strict";
 	var __extends = (this && this.__extends) || (function () {
@@ -136,17 +135,11 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var leg_1 = __webpack_require__(2);
 	var Bug = (function (_super) {
 	    __extends(Bug, _super);
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 1;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, 50 * scale, 25 * scale, 180 * scale, -Math.PI / 2 + 1, 0);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, 50 * scale, 0 * scale, 180 * scale, Math.PI / 2 - 1, 0);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, 50 * scale, 10 * scale, 120 * scale, -Math.PI / 2 - 0.8, 0);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, 50 * scale, 35 * scale, 120 * scale, Math.PI / 2 + 0.8, 0);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -170,153 +163,13 @@
 	            }
 	        }
 	        ;
-	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.15);
-	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.4);
-	        this.renderP(this.lp.getPos());
-	        this.renderP(this.lp2.getPos());
-	        this.renderP(this.lp3.getPos());
-	        this.renderP(this.lp4.getPos());
 	    };
 	    Bug.prototype.setRoute = function (route, nextLength) {
 	        _super.prototype.setRoute.call(this, route, nextLength);
 	    };
-	    Bug.prototype.renderP = function (p) {
-	        var g = this._graphics;
-	        g.moveTo(p.begin.x, p.begin.y);
-	        g.lineTo(p.middle.x, p.middle.y);
-	        g.lineTo(p.end.x, p.end.y);
-	    };
 	    return Bug;
 	}(WORMS.Base));
 	exports.Bug = Bug;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var legPos_1 = __webpack_require__(3);
-	var Leg = (function () {
-	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, index) {
-	        this._bug = bug;
-	        this._flip = flip;
-	        this._index = Math.floor(index);
-	        this._length1 = length1;
-	        this._length2 = length2;
-	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, index);
-	    }
-	    Leg.prototype.getPos = function () {
-	        var fromPos = this._bug.bone[this._index];
-	        var toPos = this._legPos.getPos();
-	        var r = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
-	        var a = fromPos.distance(toPos);
-	        var b = this._length1;
-	        var c = this._length2;
-	        var minA = a * 1.02;
-	        if (b + c < minA) {
-	            var ratio = b / (b + c);
-	            b = ratio * minA;
-	            c = minA - b;
-	        }
-	        var ra = Math.acos((b * b + c * c - a * a) / (2 * b * c));
-	        var rb = Math.acos((a * a + c * c - b * b) / (2 * a * c));
-	        var rc = Math.acos((a * a + b * b - c * c) / (2 * a * b));
-	        var rr = r + (this._flip ? rc : -rc);
-	        var x = Math.cos(rr) * b + fromPos.x;
-	        var y = Math.sin(rr) * b + fromPos.y;
-	        return {
-	            begin: fromPos,
-	            middle: new UTILS.Pos(x, y),
-	            end: toPos
-	        };
-	    };
-	    Object.defineProperty(Leg.prototype, "legPos", {
-	        get: function () {
-	            return this._legPos;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Leg.prototype, "index", {
-	        set: function (value) {
-	            this._legPos.beginOffset = value;
-	            this._index = value;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    return Leg;
-	}());
-	exports.Leg = Leg;
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var LegPos = (function () {
-	    function LegPos(bug, span, radius, radianOffset, spanOffset, beginOffset, baseId) {
-	        if (baseId === void 0) { baseId = 0; }
-	        this.bug = bug;
-	        this.span = span;
-	        this.radius = radius;
-	        this.radianOffset = radianOffset;
-	        this.spanOffset = spanOffset % span;
-	        this.beginOffset = beginOffset;
-	        this._baseId = 0;
-	    }
-	    LegPos.prototype.getPos = function () {
-	        this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
-	        var fid = this._baseId + this.spanOffset;
-	        var nf = (fid) % (this.span / 2);
-	        var nf2 = (fid) % this.span;
-	        var pid = Math.floor(Math.floor(fid / this.span) * this.span - this.spanOffset + (this.bug.currentLength - this.beginOffset));
-	        var pos = this._getPos(pid);
-	        this._id = pid;
-	        if (nf < nf2) {
-	            var ppos = this._getPos(pid + this.span);
-	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
-	            // p = nf / (this.span / 2);
-	            pos.x += (ppos.x - pos.x) * p;
-	            pos.y += (ppos.y - pos.y) * p;
-	            return pos;
-	        }
-	        return pos;
-	    };
-	    LegPos.prototype._getPos = function (id) {
-	        id = Math.floor(id);
-	        if (id < 0)
-	            id = 0;
-	        if (id >= this.bug.route.length - 1)
-	            id = this.bug.route.length - 2;
-	        var p1 = this.bug.route[id];
-	        var p2 = this.bug.route[id + 1];
-	        var tx = p2.x - p1.x;
-	        var ty = p2.y - p1.y;
-	        var r = Math.atan2(ty, tx) + this.radianOffset;
-	        return new UTILS.Pos(Math.cos(r) * this.radius + p1.x, Math.sin(r) * this.radius + p1.y);
-	    };
-	    Object.defineProperty(LegPos.prototype, "id", {
-	        get: function () {
-	            return this._id;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(LegPos.prototype, "baseId", {
-	        get: function () {
-	            return this._baseId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    return LegPos;
-	}());
-	exports.LegPos = LegPos;
 
 
 /***/ }

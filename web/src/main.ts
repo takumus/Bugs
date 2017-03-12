@@ -17,31 +17,29 @@ function initBugs(): void {
     const bug = new Bug(50);
     stage.addChild(bug.graphics);
 
-    let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 200, 0);
+    let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 400, 0);
     const next = () => {
-        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
+        // const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
+        const nVecPos = new UTILS.VecPos(1200, 400, 0);
         const route = ROUTES.RouteGenerator.getMinimumRoute(
             pVecPos,
             nVecPos,
             200,
             200,
             5
-        ).wave(20, 0.1);
+        )//.wave(20, 0.1);
         pVecPos = nVecPos;
         guide.clear();
         guide.render(route);
         bug.setRoute(route);
-        new TWEEN.Tween({s: 0})
-        .to({s: 1}, 3000)
-        .onUpdate(function(): void {
-            bug.setStep(this.s);
-            bug.render();
-        })
-        .onComplete(function(): void {
-        })
-        .start();
+        bug.setStep(0);
+        bug.render();
     }
     next();
+    window.addEventListener('mousemove', (e) => {
+        bug.setStep((e.clientX - 100) / (stageWidth - 200));
+        bug.render();
+    })
 }
 function initGUI(): void {
     const gui = new dat.GUI();

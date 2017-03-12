@@ -64,25 +64,23 @@
 	    stage.addChild(guide);
 	    var bug = new bugs_1.Bug(50);
 	    stage.addChild(bug.graphics);
-	    var pVecPos = new UTILS.VecPos(200, 200, 0);
+	    var pVecPos = new UTILS.VecPos(200, 400, 0);
 	    var next = function () {
-	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
-	        var route = ROUTES.RouteGenerator.getMinimumRoute(pVecPos, nVecPos, 200, 200, 5).wave(20, 0.1);
+	        // const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
+	        var nVecPos = new UTILS.VecPos(1200, 400, 0);
+	        var route = ROUTES.RouteGenerator.getMinimumRoute(pVecPos, nVecPos, 200, 200, 5); //.wave(20, 0.1);
 	        pVecPos = nVecPos;
 	        guide.clear();
 	        guide.render(route);
 	        bug.setRoute(route);
-	        new TWEEN.Tween({ s: 0 })
-	            .to({ s: 1 }, 3000)
-	            .onUpdate(function () {
-	            bug.setStep(this.s);
-	            bug.render();
-	        })
-	            .onComplete(function () {
-	        })
-	            .start();
+	        bug.setStep(0);
+	        bug.render();
 	    };
 	    next();
+	    window.addEventListener('mousemove', function (e) {
+	        bug.setStep((e.clientX - 100) / (stageWidth - 200));
+	        bug.render();
+	    });
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();
@@ -140,6 +138,13 @@
 	    function Bug(length) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
+	        _this.prevPos;
+	        _this.len = 0;
+	        _this.pStep = 0;
+	        _this.pid = 0;
+	        _this.pid2 = 0;
+	        _this.pp = new UTILS.Pos();
+	        _this.pp2 = new UTILS.Pos();
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -163,6 +168,36 @@
 	            }
 	        }
 	        ;
+	        if (this.prevPos)
+	            this.len += this.prevPos.distance(this.bone[0]) * (this.step > this.pStep ? 1 : -1);
+	        // console.log(this.bone[0]);
+	        this.prevPos = this.bone[0].clone();
+	        this.pStep = this.step;
+	        var span = 180;
+	        // console.log(Math.abs(this.pid - this.len) / 120);
+	        var l1 = this.len;
+	        if (Math.abs(this.pid - l1) > span) {
+	            this.pid = l1;
+	            this.pp = this._getPos(0);
+	        }
+	        var l2 = this.len + span / 2;
+	        if (Math.abs(this.pid2 - l2) > span) {
+	            this.pid2 = l2;
+	            this.pp2 = this._getPos(0, -Math.PI / 2);
+	        }
+	        g.drawCircle(this.pp.x, this.pp.y, 10);
+	        g.drawCircle(this.pp2.x, this.pp2.y, 10);
+	    };
+	    Bug.prototype._getPos = function (id, o) {
+	        if (o === void 0) { o = Math.PI / 2; }
+	        id = Math.floor(id);
+	        var p1 = this.bone[id];
+	        var p2 = this.bone[id + 1];
+	        var tx = p2.x - p1.x;
+	        var ty = p2.y - p1.y;
+	        var r = Math.atan2(ty, tx) + o;
+	        var radius = 100;
+	        return new UTILS.Pos(Math.cos(r) * radius + p1.x, Math.sin(r) * radius + p1.y);
 	    };
 	    Bug.prototype.setRoute = function (route, nextLength) {
 	        _super.prototype.setRoute.call(this, route, nextLength);

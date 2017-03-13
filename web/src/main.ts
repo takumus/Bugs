@@ -5,13 +5,13 @@ let canvas: HTMLCanvasElement;
 let stageWidth: number = 0, stageHeight: number = 0;
 const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
-    speed: 16
+    speed: 30
 }
 function initBugs(): void {
     const guide = new ROUTES.Debugger();
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
-    const bug = new Bug(60, 30);
+    const bug = new Bug(40, 20);
     stage.addChild(bug.graphics);
 
     let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 200, 0);
@@ -21,11 +21,11 @@ function initBugs(): void {
         const route = ROUTES.RouteGenerator.getMinimumRoute(
             bug.getHeadVecPos(),
             nVecPos,
-            120 * Math.random() + 100,
-            120 * Math.random() + 100,
+            100 * Math.random() + 70,
+            100 * Math.random() + 70,
             5
         ).wave(20, 0.1);
-        while (route.length % Math.floor(30) != 0) {
+        while (route.length % Math.floor(20) != 0) {
             route.pop();
         }
         if (route.length == 0) {
@@ -37,7 +37,7 @@ function initBugs(): void {
         guide.render(route);
         bug.setRoute(bug.getCurrentLine().pushLine(route));
         new TWEEN.Tween({s: 0})
-        .to({s: 1}, bug.route.length * props.speed)
+        .to({s: 1}, route.length * props.speed)
         .onUpdate(function(): void {
             bug.setStep(this.s);
             bug.render();

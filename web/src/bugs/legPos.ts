@@ -6,8 +6,8 @@ export class LegPos {
     public radianOffset: number;
     public spanOffset: number;
     public beginOffset: number;
-    private _id: number;
-    private _baseId: number;
+    private _nextPos: UTILS.Pos;
+    private _prevPos: UTILS.Pos;
     constructor(bug: Bug, span: number, radius: number, radianOffset: number, spanOffset: number, beginOffset: number) {
         this.bug = bug;
         this.span = span;
@@ -15,26 +15,29 @@ export class LegPos {
         this.radianOffset = radianOffset;
         this.spanOffset = spanOffset % span;
         this.beginOffset = beginOffset;
+        this._nextPos = new UTILS.Pos();
+        this._prevPos = new UTILS.Pos();
     }
+    public get prevPos() {return this._prevPos}
+    public get nextPos() {return this._nextPos}
     public getPos() {
-        this._baseId = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
+        const id = (this.bug.route.length - this.bug.currentLength) * this.bug.step;
 
-        const fid = this._baseId + this.spanOffset;
+        const fid = id + this.spanOffset;
         const nf = (fid) % (this.span / 2);
         const nf2 = (fid) % this.span;
         const pid = Math.floor(Math.floor(fid / this.span) * this.span - this.spanOffset + (this.bug.currentLength - this.beginOffset));
-        const pos = this._getPos(pid);
-        this._id = pid;
+        this._prevPos = this._getPos(pid);
         if (nf < nf2) {
-            const ppos = this._getPos(pid + this.span);
+            this._nextPos = this._getPos(pid + this.span);
             let p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
             p = Math.pow(p, 2);
             // p = nf / (this.span / 2);
-            pos.x += (ppos.x - pos.x) * p;
-            pos.y += (ppos.y - pos.y) * p;
-            return pos;
+            this._prevPos.x += (this._nextPos.x - this._prevPos.x) * p;
+            this._prevPos.y += (this._nextPos.y - this._prevPos.y) * p;
+            return this._prevPos;
         }
-        return pos;
+        return this._prevPos;
     }
     public _getPos(id: number): UTILS.Pos {
         id = Math.floor(id);
@@ -49,15 +52,5 @@ export class LegPos {
             Math.cos(r) * this.radius + p1.x,
             Math.sin(r) * this.radius + p1.y
         );
-    }
-    public get id(): number {
-        return this._id;
-    }
-    public get idDiff(): number {
-        if (!this.bug.route) return 0;
-        return (this._baseId + this.spanOffset) % (this.span / 2);
-    }
-    public set idDiff(v: number) {
-        this.beginOffset -= v;
     }
 }

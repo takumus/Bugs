@@ -5,7 +5,7 @@ let canvas: HTMLCanvasElement;
 let stageWidth: number = 0, stageHeight: number = 0;
 const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
-    speed: 30
+    speed: 15
 }
 function initBugs(): void {
     const guide = new ROUTES.Debugger();
@@ -17,16 +17,26 @@ function initBugs(): void {
     let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 200, 0);
     let mousePos: UTILS.VecPos = new UTILS.VecPos();
     const next = () => {
-        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
+        const p = bug.bone[0];
+        const r = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+        const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
+
+        //const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
         const route = ROUTES.RouteGenerator.getMinimumRoute(
             bug.getHeadVecPos(),
             nVecPos,
-            100 * Math.random() + 70,
-            100 * Math.random() + 70,
+            50 * Math.random() + 60,
+            50 * Math.random() + 60,
             5
         ).wave(20, 0.1);
+        
         while (route.length % Math.floor(20) != 0) {
-            route.pop();
+            const p1 = route[route.length - 2];
+            const p2 = route[route.length - 1].clone();
+            const d = p1.distance(p2);
+            p2.x += (p2.x - p1.x) / d * 5;
+            p2.y += (p2.y - p1.y) / d * 5;
+            route.push(p2.clone());
         }
         if (route.length == 0) {
             next();
@@ -48,9 +58,9 @@ function initBugs(): void {
         .start();
     }
     next();
-    window.addEventListener('mousedown', (e) => {
-        mousePos.pos.x = e.clientX;
-        mousePos.pos.y = e.clientY;
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
     })
 }
 function initGUI(): void {

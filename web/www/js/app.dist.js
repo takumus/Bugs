@@ -53,7 +53,7 @@
 	var stageWidth = 0, stageHeight = 0;
 	var mouse = new UTILS.Pos();
 	var props = {
-	    speed: 15
+	    speed: 24
 	};
 	function initBugs() {
 	    var guide = new ROUTES.Debugger();
@@ -66,9 +66,9 @@
 	    var next = function () {
 	        var p = bug.bone[0];
 	        var r = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-	        var nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
-	        //const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
-	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 60, 50 * Math.random() + 60, 5).wave(20, 0.1);
+	        //const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
+	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
+	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
 	        while (route.length % Math.floor(20) != 0) {
 	            var p1 = route[route.length - 2];
 	            var p2 = route[route.length - 1].clone();
@@ -194,10 +194,11 @@
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
 	        this.renderP(this.lp4.getPos());
+	        ///*
 	        this.renderGuide(this.lp);
 	        this.renderGuide(this.lp2);
 	        this.renderGuide(this.lp3);
-	        this.renderGuide(this.lp4);
+	        this.renderGuide(this.lp4); //*/
 	    };
 	    Bug.prototype.setRoute = function (route, nextLength) {
 	        _super.prototype.setRoute.call(this, route, nextLength);

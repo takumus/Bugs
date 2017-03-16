@@ -5,7 +5,7 @@ let canvas: HTMLCanvasElement;
 let stageWidth: number = 0, stageHeight: number = 0;
 const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
-    speed: 15
+    speed: 24
 }
 function initBugs(): void {
     const guide = new ROUTES.Debugger();
@@ -19,14 +19,14 @@ function initBugs(): void {
     const next = () => {
         const p = bug.bone[0];
         const r = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-        const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
+        //const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
 
-        //const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 200 - 100, stageHeight / 2 + Math.random() * 200 - 100, Math.PI * 2 * Math.random());
+        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
         const route = ROUTES.RouteGenerator.getMinimumRoute(
             bug.getHeadVecPos(),
             nVecPos,
-            50 * Math.random() + 60,
-            50 * Math.random() + 60,
+            50 * Math.random() + 70,
+            50 * Math.random() + 70,
             5
         ).wave(20, 0.1);
         

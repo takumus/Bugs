@@ -39,11 +39,11 @@ export class Bug extends WORMS.Base {
         this.renderP(this.lp2.getPos());
         this.renderP(this.lp3.getPos());
         this.renderP(this.lp4.getPos());
-
+        ///*
         this.renderGuide(this.lp);
         this.renderGuide(this.lp2);
         this.renderGuide(this.lp3);
-        this.renderGuide(this.lp4);
+        this.renderGuide(this.lp4);//*/
     }
     public setRoute(route: ROUTES.Line, nextLength?: number): void {
         super.setRoute(route, nextLength);
